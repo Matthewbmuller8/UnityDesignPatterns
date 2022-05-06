@@ -15,4 +15,9 @@ public class MoveLCommand : Command
     {
         Movable.Move(Vector3.left);
     }
+
+    public override void Undo()
+    {
+        Movable.Move(Vector3.right);
+    }
 }

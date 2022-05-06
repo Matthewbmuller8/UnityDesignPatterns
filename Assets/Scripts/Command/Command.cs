@@ -8,4 +8,6 @@ using UnityEngine;
 public abstract class Command
 {
     public abstract void Execute();
+    //Undo functionality needs to be oppposite of Execute command
+    public abstract void Undo();
 }

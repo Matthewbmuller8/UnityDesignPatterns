@@ -10,7 +10,7 @@ public class ComPatInputManager : MonoBehaviour
     public ComPatPlayer player;
     
     //Storing the commands with a corresponding key
-    private Dictionary<KeyCode, Command> KeyComDict;
+    private Dictionary<KeyCode, Command> keyComDict;
 
     //Define the user commands we want bound to keys
     private Command playerMoveFCommand;
@@ -18,9 +18,14 @@ public class ComPatInputManager : MonoBehaviour
     private Command playerMoveLCommand;
     private Command playerMoveRCommand;
 
+    //Command stack that undoes the commands of the player
+    //Would need to make a list if we wanted to redo as well
+    private Stack<Command> comStack;
+
     private void Start()
     {
-        KeyComDict = new Dictionary<KeyCode, Command>();
+        keyComDict = new Dictionary<KeyCode, Command>();
+        comStack = new Stack<Command>();
 
         //Creating commands
         playerMoveFCommand = new MoveFCommand(player);
@@ -28,10 +33,10 @@ public class ComPatInputManager : MonoBehaviour
         playerMoveLCommand = new MoveLCommand(player);
         playerMoveRCommand = new MoveRCommand(player);
         //Binding default keys
-        KeyComDict.Add(KeyCode.W, playerMoveFCommand);
-        KeyComDict.Add(KeyCode.S, playerMoveBCommand);
-        KeyComDict.Add(KeyCode.A, playerMoveLCommand);
-        KeyComDict.Add(KeyCode.D, playerMoveRCommand);
+        keyComDict.Add(KeyCode.W, playerMoveFCommand);
+        keyComDict.Add(KeyCode.S, playerMoveBCommand);
+        keyComDict.Add(KeyCode.A, playerMoveLCommand);
+        keyComDict.Add(KeyCode.D, playerMoveRCommand);
         //Adding alternative keys - if needed
         //KeyComDict.Add(KeyCode.I, playerMoveFCommand);
         //KeyComDict.Add(KeyCode.K, playerMoveBCommand);
@@ -47,12 +52,17 @@ public class ComPatInputManager : MonoBehaviour
     //Invokes the command we want to execute
     private void HandleInput()
     {
-        foreach (KeyCode key in KeyComDict.Keys)
+        foreach (KeyCode key in keyComDict.Keys)
         {
             if (Input.GetKey(key))
             {
                 //Execute the command bound to the key
-                KeyComDict[key].Execute();
+                keyComDict[key].Execute();
+                //Add the command to the stack
+                comStack.Push(keyComDict[key]);
+            } else if (Input.GetKey(KeyCode.U) && comStack.Count != 0)
+            {
+                comStack.Pop().Undo();
             }
         }
     }
@@ -70,12 +80,12 @@ public class ComPatInputManager : MonoBehaviour
         //Haven't implemented a check for the string yet, so take first value
         KeyCode newKey = GetKeyCode(newKeyField.text[0]);
 
-        foreach (KeyCode key in KeyComDict.Keys)
+        foreach (KeyCode key in keyComDict.Keys)
         {
-            if (KeyComDict[key] == command)
+            if (keyComDict[key] == command)
             {
-                KeyComDict.Remove(key);
-                KeyComDict.Add(newKey, command);
+                keyComDict.Remove(key);
+                keyComDict.Add(newKey, command);
                 return;
             }
         }

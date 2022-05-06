@@ -21,24 +21,7 @@ public class ComPatPlayer : MonoBehaviour, IMovable
 
     public void Move(Vector3 direction)
     {
-        /*Vector3 direction = Vector3.zero;
-        if (Input.GetKey(KeyCode.W))
-        {
-            direction += Vector3.forward;
-        }
-        if (Input.GetKey(KeyCode.S))
-        {
-            direction += Vector3.back;
-        }
-        if (Input.GetKey(KeyCode.A))
-        {
-            direction += Vector3.left;
-        }
-        if (Input.GetKey(KeyCode.D))
-        {
-            direction += Vector3.right;
-        }
-        direction = direction.normalized;*/
-        charController.Move(direction * moveSpeed * Time.deltaTime);
+        //Using fixed delta time so execute and undo commands align
+        charController.Move(moveSpeed * Time.fixedDeltaTime * direction);
     }
 }
