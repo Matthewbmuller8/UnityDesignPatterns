@@ -5,6 +5,7 @@ using UnityEngine;
 public class ProtoSpawner : MonoBehaviour
 {
     public GameObject MonsterPrototypeObj;
+    public ProtoMonsterData MonsterPrototypeData;
 
     private void Update()
     {
@@ -16,7 +17,7 @@ public class ProtoSpawner : MonoBehaviour
 
     public void SpawnMonster(GameObject monsterProto)
     {
-        //Create the new monster object in world space - this should share state with the prototype
-        Instantiate(monsterProto, transform.position, Quaternion.identity);
+        //Create the new monster object in world space - state is stored in Scriptable Object
+        Instantiate(monsterProto, transform.position, Quaternion.identity).GetComponent<ProtoMonster>().MonsterData = MonsterPrototypeData;
     }
 }

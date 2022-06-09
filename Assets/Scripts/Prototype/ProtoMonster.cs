@@ -4,14 +4,20 @@ using UnityEngine;
 
 public class ProtoMonster : MonoBehaviour
 {
-    public int Health;
-    public int Damage;
-    public string Name;
+    [SerializeField]
+    public ProtoMonsterData MonsterData;
 
-    public void Init (int health, int damage, string name)
+    private void Update()
     {
-        Health = health;
-        Damage = damage;
-        Name = name;
+        if (Input.GetKeyDown(KeyCode.P))
+        {
+            PrintData();
+        }
+    }
+
+    private void PrintData()
+    {
+        string message = $"{MonsterData.MonsterName} has {MonsterData.Health} health and {MonsterData.Damage} damage.";
+        Debug.Log(message);
     }
 }
